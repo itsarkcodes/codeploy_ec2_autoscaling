@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EC2 Instance Public IP</title>
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            font-family: Arial, sans-serif;
+            background-color: #f3f4f6;
+            margin: 0;
+        }
+        .container {
+            text-align: center;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            background-color: #ffffff;
+            width: 300px;
+        }
+        h1 {
+            font-size: 24px;
+            color: #333;
+            margin: 0 0 10px;
+        }
+        p {
+            font-size: 18px;
+            color: #555;
+        }
+        #ip {
+            font-size: 20px;
+            font-weight: bold;
+            color: #1a73e8;
+            margin-top: 10px;
+        }
+        button {
+            background-color: #1a73e8;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-top: 15px;
+        }
+        button:hover {
+            background-color: #135ab6;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>EC2 Instance Public IP</h1>
+    <p>Your current instance public IP address is:</p>
+    <div id="ip">Loading...</div>
+    <button onclick="fetchInstanceIP()">Refresh</button>
+</div>
+
+<script>
+    async function fetchInstanceIP() {
+        const ipElement = document.getElementById("ip");
+        ipElement.textContent = "Loading...";
+        try {
+            const response = await fetch("http://169.254.169.254/latest/meta-data/public-ipv4");
+            if (!response.ok) throw new Error("Failed to fetch IP");
+            const ip = await response.text();
+            ipElement.textContent = ip.trim();
+        } catch (error) {
+            ipElement.textContent = "Error fetching IP.";
+            console.error("Error fetching IP:", error);
+        }
+    }
+    window.onload = fetchInstanceIP;
+</script>
+
+</body>
+</html>
